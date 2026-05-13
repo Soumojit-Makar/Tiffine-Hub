@@ -16,7 +16,8 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "node-fetch": "^3.3.2",
-    "http-proxy-middleware": "^2.0.6"
+    "http-proxy-middleware": "^2.0.6",
+    "cors": "^2.8.5"
     
   },
   "devDependencies": {

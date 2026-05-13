@@ -4,14 +4,39 @@ const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
-
+const cors = require('cors');
 const { ipRateLimiter, userRateLimiter } = require('./middleware/rate-limit.middleware');
 const { authenticateJWT } = require('./middleware/auth.middleware');
 const { errorHandler } = require('./middleware/error.middleware');
 const { proxyToAuth, proxyToMail, proxyToZone } = require('./services/proxy.service');
 
 const app = express();
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+];
 
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // allow server-to-server / postman
+
+    const isAllowed = allowedOrigins.some(o => {
+      if (o.includes('*')) {
+        return origin.endsWith(o.replace('*', ''));
+      }
+      return o === origin;
+    });
+
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS blocked: ${origin}`));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key'],
+}));
 // ── Security & logging ────────────────────────────────────────────────────────
 app.use(helmet());
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
