@@ -128,6 +128,7 @@ const ZONE_ROUTES_WITHOUT_AUTH = [
   '/api/v1/zone-lookup',
   '/api/v1/demo-admin',
   '/api/v1/administrators',
+  '/api/v1/cart'
 
 ];
 ZONE_ROUTES_WITHOUT_AUTH.forEach((prefix) => {
